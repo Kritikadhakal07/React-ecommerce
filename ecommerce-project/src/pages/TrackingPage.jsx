@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 function TrackingPage(){
     return(
         <>
+        <link rel="icon" type="image/svg+xml" href="cart-favicon.png" />
          <title>Tracking</title>
         <Header />
 
