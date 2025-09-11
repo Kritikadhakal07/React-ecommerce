@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import CheckmarkIcon from "../assets/image/icons/checkmark.png";
 // import { products } from "../../starting-code/data/products";
 import "./HomePage.css";
+import  formatMoney  from '../utils/money'
 
 function HomePage({cart}) {
   const [products, setProducts] = useState([]);
@@ -48,7 +49,7 @@ function HomePage({cart}) {
                 </div>
 
                 <div className="product-price">
-                  ${(product.priceCents / 100).toFixed(2)}
+                  {formatMoney(product.priceCents)}
                 </div>
 
                 <div className="product-quantity-container">
