@@ -11,15 +11,15 @@ import  NotFoundPage  from './pages/Error404.jsx';
 
 function App() {
   const [cart, setCart] = useState([]);
- 
+  const loadCart = async () => {
+      const response = await axios.get("/api/cart-items?expand=product")
+        setCart(response.data);
+      
+    };
 
   useEffect(() => {
-    const fetchAppData = async () => {
-      const response = await axios.get("/api/cart-items?expand=product").then((response) => {
-        setCart(response.data);
-      });
-    }
-    fetchAppData();
+    
+    loadCart();
   }, []);
 
   return (
@@ -27,7 +27,7 @@ function App() {
       <Routes>
         {/* <Route path = "/" element={<Homepage />}></Route> */}
 
-        <Route index element={<Homepage cart={cart}/>} />
+        <Route index element={<Homepage cart={cart} loadCart={loadCart}/>} />
 
         <Route path="checkout" element={<CheckoutPages cart={cart}/>} />
         <Route path="orders" element={<OrderPages cart={cart}/>} />
