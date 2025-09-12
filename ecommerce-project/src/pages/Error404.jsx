@@ -1,20 +1,19 @@
-import Header from '../components/Header';
-function Error404(){
-    return(
-        <>
+// From lesson 6 exercise solutions.
+import  Header  from '../components/Header';
+import './Error404.css';
+ function NotFoundPage({cart}) {
+  return (
+    <>
+      <title>404 Page Not Found</title>
+      <link rel="icon" type="image/svg+xml" href="home-favicon.png" />
 
-        <Header />
-        <div>
-            
-            <h1>404</h1>
-            <h2>Page Not Found</h2>
+      <Header cart={ cart }/>
 
-        </div>
-        
-        
-        
-        </>
-    );
+      <div className="not-found-message">
+        Page not found
+      </div>
+    </>
+  );
 }
 
-export default Error404;
+export default NotFoundPage;

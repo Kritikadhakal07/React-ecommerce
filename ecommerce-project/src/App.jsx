@@ -6,10 +6,13 @@ import CheckoutPages from "./pages/checkout/CheckoutPages.jsx";
 import OrderPages from "./pages/orders/OrderPages.jsx";
 import TrackingPage from "./pages/TrackingPage.jsx";
 import Header from "./components/Header.jsx";
-import Error404 from "./pages/Error404.jsx";
+import  NotFoundPage  from './pages/Error404.jsx';
+
 
 function App() {
   const [cart, setCart] = useState([]);
+ 
+
   useEffect(() => {
     const fetchAppData = async () => {
       const response = await axios.get("/api/cart-items?expand=product").then((response) => {
@@ -28,8 +31,9 @@ function App() {
 
         <Route path="checkout" element={<CheckoutPages cart={cart}/>} />
         <Route path="orders" element={<OrderPages cart={cart}/>} />
-        <Route path="tracking" element={<TrackingPage />} />
-        <Route path="*" element={<Error404 />} />
+        <Route path="tracking/:orderId/:productId" element={<TrackingPage cart={cart} />} />
+        
+          <Route path="*" element={<NotFoundPage cart={cart} />} />
       </Routes>
     </>
   );
