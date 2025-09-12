@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import CartItemDetails from "./CartItemDetails";
 import DeliveryDate from "./DeliveryDate";
+import axios from "axios";
 
 
 function OrderSummary({cart, deliveryOption, loadCart}){
@@ -14,11 +15,19 @@ function OrderSummary({cart, deliveryOption, loadCart}){
                   }
                 );
 
+                const deleteCartItem = async() => {
+                  await axios.delete(`/api/cart-items/${cartItem.productId}`);
+                  await loadCart();
+
+
+                }
+
+
                 return (
                   <div key={cartItem.productId} className="cart-item-container">
                     <DeliveryDate selectedDeliveryOption={selectedDeliveryOption}/>
 
-                  <CartItemDetails cartItem={cartItem} deliveryOption={deliveryOption} loadCart={loadCart}/>
+                  <CartItemDetails cartItem={cartItem} deliveryOption={deliveryOption} loadCart={loadCart} deleteCartItem={deleteCartItem}/>
                   </div>
                 );
               })}
