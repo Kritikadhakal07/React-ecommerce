@@ -3,21 +3,30 @@ import CheckoutLockIcon from '../../assets/image/icons/checkout-lock-icon.png';
 import Logo from '../../assets/image/logo.png';
 import MobileLogo from '../../assets/image/mobile-logo.png';
 import './CheckoutHeader.css';
+import { NavLink } from 'react-router-dom';
 
- function CheckoutHeader() {
+ function CheckoutHeader( {cart} ) {
+  let totalQuantity = 0;
+  cart.forEach((cartItem) => {
+   totalQuantity += cartItem.quantity;
+
+
+
+  });
+
   return (
     <div className="checkout-header">
       <div className="header-content">
         <div className="checkout-header-left-section">
-          <Link to="/">
+          <NavLink to="/">
             <img className="logo" src={Logo} />
             <img className="mobile-logo" src={MobileLogo} />
-          </Link>
+          </NavLink>
         </div>
 
         <div className="checkout-header-middle-section">
-          Checkout (<Link className="return-to-home-link"
-            to="/">3 items</Link>)
+          Checkout (<NavLink className="return-to-home-link"
+            to="/">{totalQuantity} items</NavLink>)
         </div>
 
         <div className="checkout-header-right-section">
