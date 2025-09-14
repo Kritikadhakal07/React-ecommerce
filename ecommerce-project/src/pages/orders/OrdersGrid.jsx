@@ -1,14 +1,30 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import formatMoney from "../../utils/money";
 import dayjs from "dayjs";
 import BuyAgainIcon from "../../assets/image/icons/buy-again.png";
 import { Link } from 'react-router-dom';
-function OrdersGrid({ orders }) {
-    return (
-        <Fragment>
-        
-        
-         <div className="orders-page">
+import axios from "axios";
+
+function OrdersGrid({ orders, loadCart }) {
+  const [addedProductId, setAddedProductId] = useState(null);
+
+  const addToCart = async (productId, quantity) => {
+    await axios.post('/api/cart-items', {
+      productId,
+      quantity
+    });
+    await loadCart();
+
+    setAddedProductId(productId);
+
+    setTimeout(() => {
+      setAddedProductId(null);
+    }, 2000);
+  };
+
+  return (
+    <Fragment>
+      <div className="orders-page">
         <div className="page-title">Your Orders</div>
 
         <div className="orders-grid">
@@ -48,21 +64,28 @@ function OrdersGrid({ orders }) {
                           <div className="product-delivery-date">
                             {dayjs(orderProduct.estimatedDeliveryTimeMs).format("MMMM D")}
                           </div>
-                          <div className="product-quantity">Quantity: {orderProduct.quantity}</div>
-                          <button className="buy-again-button button-primary">
+                          <div className="product-quantity">
+                            Quantity: {orderProduct.quantity}
+                          </div>
+
+                          <button
+                            className="buy-again-button button-primary"
+                            onClick={() =>
+                              addToCart(orderProduct.product.id, orderProduct.quantity)
+                            }
+                          >
                             <img
                               className="buy-again-icon"
                               src={BuyAgainIcon}
                             />
                             <span className="buy-again-message">
-                              Add to Cart
+                              {addedProductId === orderProduct.product.id ? "Added!" : "Add to Cart"}
                             </span>
                           </button>
                         </div>
 
                         <div className="product-actions">
                           <Link to={`/tracking/${order.id}/${orderProduct.product.id}`}>
-                           
                             <button className="track-package-button button-secondary">
                               Track package
                             </button>
@@ -71,22 +94,14 @@ function OrdersGrid({ orders }) {
                       </Fragment>
                     );
                   })}
-                 
-
-                 
                 </div>
               </div>
             );
           })}
-
-         
         </div>
       </div>
-         </Fragment>
-    );
-   
-
+    </Fragment>
+  );
 }
-
 
 export default OrdersGrid;

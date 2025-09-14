@@ -5,7 +5,7 @@ import Header from "../../components/Header";
 
 import "./OrderPages.css";
 import OrderGrid from './OrdersGrid';
-function OrdersPage({ cart }) {
+function OrdersPage({ cart,loadCart }) {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ function OrdersPage({ cart }) {
 
       <Header cart={cart} />
 
-      <OrderGrid orders={orders} />
+      <OrderGrid orders={orders} loadCart={loadCart} />
     </>
   );
 }
