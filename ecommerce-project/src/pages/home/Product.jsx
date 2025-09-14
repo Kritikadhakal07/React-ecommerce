@@ -1,66 +1,93 @@
-import { it, expect, describe, vi, beforeEach } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
-import userEvent from '@testing-library/user-event';
 import axios from 'axios';
-import  HomePage  from './HomePage';
+import { useState } from 'react';
+import  formatMoney  from '../../utils/money';
 
-vi.mock('axios');
+function Product({ product, loadCart }) {
+  const [quantity, setQuantity] = useState(1);
+  const [showAddedMessage, setShowAddedMessage] = useState(false);
 
-describe('HomePage component', () => {
-  let loadCart;
-
-  beforeEach(() => {
-    loadCart = vi.fn();
-
-    axios.get.mockImplementation(async (urlPath) => {
-      if (urlPath === '/api/products') {
-        return {
-          data: [{
-            id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
-            image: "images/products/athletic-cotton-socks-6-pairs.jpg",
-            name: "Black and Gray Athletic Cotton Socks - 6 Pairs",
-            rating: {
-              stars: 4.5,
-              count: 87
-            },
-            priceCents: 1090,
-            keywords: ["socks", "sports", "apparel"]
-          },
-          {
-            id: "15b6fc6f-327a-4ec4-896f-486349e85a3d",
-            image: "images/products/intermediate-composite-basketball.jpg",
-            name: "Intermediate Size Basketball",
-            rating: {
-              stars: 4,
-              count: 127
-            },
-            priceCents: 2095,
-            keywords: ["sports", "basketballs"]
-          }]
-        };
-      }
+  const addToCart = async () => {
+    await axios.post('/api/cart-items', {
+      productId: product.id,
+      quantity
     });
-  });
+    await loadCart();
 
-  it('displays the products correct', async () => {
-    render(
-      <MemoryRouter>
-        <HomePage cart={[]} loadCart={loadCart} />
-      </MemoryRouter>
-    );
-    const productContainers = await screen.findAllByTestId('product-container');
+    setShowAddedMessage(true);
 
-    expect(productContainers.length).toBe(2);
+    setTimeout(() => {
+      setShowAddedMessage(false);
+    }, 2000);
+  };
 
-    expect(
-      within(productContainers[0])
-        .getByText('Black and Gray Athletic Cotton Socks - 6 Pairs')
-    ).toBeInTheDocument();
+  const selectQuantity = (event) => {
+    const quantitySelected = Number(event.target.value);
+    setQuantity(quantitySelected);
+  };
 
-    expect(
-      within(productContainers[1])
-        .getByText('Intermediate Size Basketball')
-    ).toBeInTheDocument();
-  });
-});
+  return (
+    <div className="product-container"
+    data-testid="product-container"
+    
+    >
+      
+      <div className="product-image-container">
+        <img className="product-image"
+          data-testid="product-image"
+          src={product.image} />
+      </div>
+
+      <div className="product-name limit-text-to-2-lines">
+        {product.name}
+      </div>
+
+      <div className="product-rating-container">
+        <img className="product-rating-stars"
+          data-testid="product-rating-stars-image"
+          src={`images/ratings/rating-${product.rating.stars * 10}.png`} />
+        <div className="product-rating-count link-primary">
+          {product.rating.count}
+        </div>
+      </div>
+
+      <div className="product-price">
+        {formatMoney(product.priceCents)}
+      </div>
+
+      <div className="product-quantity-container">
+        <select value={quantity} onChange={selectQuantity}>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+
+      <div className="product-spacer"></div>
+
+      <div className="added-to-cart" style={{
+        opacity: showAddedMessage ? 1 : 0,
+      }}>
+        <img src="images/icons/checkmark.png" />
+        Added
+      </div>
+
+      <button className="add-to-cart-button button-primary"
+        onClick={addToCart}
+        data-testid="add-to-cart-button"
+        
+        >
+          
+        Add to Cart
+      </button>
+    </div>
+  );
+}
+
+export default Product;
