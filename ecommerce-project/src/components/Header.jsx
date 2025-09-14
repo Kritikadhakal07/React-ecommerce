@@ -1,50 +1,65 @@
-import { NavLink } from 'react-router-dom';
-import CartIcon from '../assets/image/icons/cart-icon.png';
-import SearchIcon from '../assets/image/icons/search-icon.png';
-import LogoWhite from '../assets/image/logo-white.png';
-import MobileLogoWhite from '../assets/image/mobile-logo-white.png';
+import { useState } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router';
 import './header.css';
 
- function Header({ cart }) {
+function Header({ cart }) {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // I need to use a different variable name since "search"
+  // is already being used below.
+  const searchText = searchParams.get('search');
+
+  // || '' is a shortcut. It means if searchText does not exist
+  // it will use a default value of ''.
+  const [search, setSearch] = useState(searchText || '');
+
+  const updateSearchInput = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const searchProducts = () => {
+    navigate(`/?search=${search}`);
+  };
 
   let totalQuantity = 0;
+
   cart.forEach((cartItem) => {
-    totalQuantity += cartItem.quantity
-
+    totalQuantity += cartItem.quantity;
   });
-
-  
 
   return (
     <div className="header">
       <div className="left-section">
-        <NavLink to="/" className="header-link">
+        <Link to="/" className="header-link">
           <img className="logo"
-            src={LogoWhite} />
+            src="images/logo-white.png" />
           <img className="mobile-logo"
-            src={MobileLogoWhite} />
-        </NavLink>
+            src="images/mobile-logo-white.png" />
+        </Link>
       </div>
 
       <div className="middle-section">
-        <input className="search-bar" type="text" placeholder="Search" />
+        <input className="search-bar" type="text" placeholder="Search"
+          value={search} onChange={updateSearchInput} />
 
-        <button className="search-button">
-          <img className="search-icon" src={SearchIcon} />
+        <button className="search-button"
+          onClick={searchProducts}>
+          <img className="search-icon" src="images/icons/search-icon.png" />
         </button>
       </div>
 
       <div className="right-section">
-        <NavLink className="orders-link header-link" to="/orders">
+        <Link className="orders-link header-link" to="/orders">
 
           <span className="orders-text">Orders</span>
-        </NavLink>
+        </Link>
 
-        <NavLink className="cart-link header-link" to="/checkout">
-          <img className="cart-icon" src={CartIcon} />
+        <Link className="cart-link header-link" to="/checkout">
+          <img className="cart-icon" src="images/icons/cart-icon.png" />
           <div className="cart-quantity">{totalQuantity}</div>
           <div className="cart-text">Cart</div>
-        </NavLink>
+        </Link>
       </div>
     </div>
   );
